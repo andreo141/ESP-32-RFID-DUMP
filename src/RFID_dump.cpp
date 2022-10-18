@@ -1,6 +1,7 @@
 
 #include <SPI.h>
 #include <MFRC522.h>
+#include <Arduino.h>
 
 #define RST_PIN         33          // Configurable, see typical pin layout above
 #define SS_PIN          2         // Configurable, see typical pin layout above
@@ -9,6 +10,9 @@
 #define SPI_MISO 4
 #define SPI_MOSI 13
 #define SPI_SCK 14
+
+int rood = 15;
+int groen = 23;
 
 
 MFRC522 mfrc522(SS_PIN, RST_PIN);  // Create MFRC522 instance
@@ -21,6 +25,12 @@ void setup() {
 	delay(4);				// Optional delay. Some board do need more time after init to be ready, see Readme
 	mfrc522.PCD_DumpVersionToSerial();	// Show details of PCD - MFRC522 Card Reader details
 	Serial.println(F("Scan PICC to see UID, SAK, type, and data blocks..."));
+	
+	pinMode(rood, OUTPUT);
+	pinMode(groen, OUTPUT);
+	digitalWrite(rood, LOW);
+	digitalWrite(groen, LOW);
+
 }
 
 void loop() {
@@ -34,6 +44,20 @@ void loop() {
 		return;
 	}
 
+
 	// Dump debug info about the card; PICC_HaltA() is automatically called
 	mfrc522.PICC_DumpToSerial(&(mfrc522.uid));
+	for (int i = 0; i < 10; i++)
+	{
+	digitalWrite(rood, HIGH);
+	delay(30);
+	digitalWrite(groen, HIGH);
+	digitalWrite(rood, LOW);
+	delay(30);
+	digitalWrite(groen, LOW);
+	}
+	digitalWrite(groen, HIGH);
+	delay(2000);
+	digitalWrite(groen, LOW);
+	return;
 }
